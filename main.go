@@ -33,9 +33,15 @@ func run() {
 		// CLONE_NEWPID: process ID
 		// CLONE_NEWNS: mount
 		// CLONE_NEWUSER: create new user ns with full capabilities in the new ns
-		Cloneflags: syscall.CLONE_NEWUTS | syscall.CLONE_NEWPID | syscall.CLONE_NEWNS,
+		Cloneflags: syscall.CLONE_NEWUTS | syscall.CLONE_NEWUSER | syscall.CLONE_NEWPID | syscall.CLONE_NEWNS,
 		// Unshare mount with the host
 		Unshareflags: syscall.CLONE_NEWNS,
+		// Map process ID 1000 to container ID 0 (?)
+		UidMappings: []syscall.SysProcIDMap{{
+			ContainerID: 0,
+			HostID:      1000,
+			Size:        1,
+		}},
 	}
 	must(cmd.Run())
 }
